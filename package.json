@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/sujaykonda/XP-Leveling-Bot/issues"
   },
-  "homepage": "https://github.com/sujaykonda/XP-Leveling-Bot#readme"
+  "homepage": "https://github.com/sujaykonda/XP-Leveling-Bot#readme",
+  "dependencies": {
+    "discord.js": "^12.0.2"
+  }
 }
