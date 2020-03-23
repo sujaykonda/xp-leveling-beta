@@ -1,0 +1,19 @@
+{
+  "name": "xp-leveling-bot",
+  "version": "1.0.0",
+  "description": "A bot to autonomize Debates + Chat, a discord server network.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sujaykonda/XP-Leveling-Bot.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sujaykonda/XP-Leveling-Bot/issues"
+  },
+  "homepage": "https://github.com/sujaykonda/XP-Leveling-Bot#readme"
+}
