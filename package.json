@@ -19,6 +19,7 @@
   "dependencies": {
     "canvas": "^2.6.1",
     "discord.js": "^12.0.2",
-    "googleapis": "^39.2.0"
+    "googleapis": "^39.2.0",
+    "xpress": "^2.4.6"
   }
 }
