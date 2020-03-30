@@ -10,7 +10,7 @@ var streamers = {}
 var client = new Discord.Client();
 var prefix = "r!"
 
-const maxBar = 356;
+const maxBar = 390;
 
 function save(){
     fs.writeFileSync("xp.json", JSON.stringify(xp))
@@ -41,10 +41,10 @@ client.on("ready", ()=>{
     client.guilds.cache.array().forEach((guild, i) => {
         var members = {}
         guild.members.cache.array().forEach((member, j) => {
-            if(load.containsKey(guild.id) && load[guild.id].containsKey(member.id)){
-                members[member.id] = load[guild.id][member.id]
+            if(load.containsKey(guild.id) && load[guild.id].containsKey(member.user.id)){
+                members[member.user.id] = load[guild.id][member.user.id]
             }else{
-                members[member.id] = 0
+                members[member.user.id] = 0
             }
         })
         xp[guild.id] = members
@@ -70,7 +70,7 @@ client.on("voiceStateUpdate", (oldState, newState) => {
     }
     if(oldState.streaming && !newState.streaming){
         console.log(streamers[newState.member.user.id][0])
-        xp[newState.guild.id][newState.member.id] += streamers[newState.member.user.id][0]*5
+        xp[newState.guild.id][newState.member.user.id] += streamers[newState.member.user.id][0]*5
         delete streamers[newState.member.user.id]
     }
 });
@@ -78,12 +78,14 @@ client.on("guildCreate", (guild) => {
     var members = guild.members.cache.array()
     var guildXP = {}
     for(var i = 0; i < members.length; i++){
-        guildXP[members[i].id] = 0
+        guildXP[members[i].user.id] = 0
     }
     xp[guild.id] = guildXP
 })
 client.on("guildMemberAdd", (member) => {
-    xp[member.guild.id][member.id] = 0
+    if(!xp[member.guild.id].containsKey(member.user.id)){
+        xp[member.guild.id][member.user.id] = 0
+    }
 })
 client.on("guildDelete", (guild) => {
     delete xp[guild.id]
@@ -97,20 +99,21 @@ client.on("message", async (msg) =>{
     }
     const guild = msg.guild;
     const member = msg.member;
+    const user = msg.author;
     const message = msg.content.toLowerCase();
     if(!timers.containsKey(guild.id)){
         timers[guild.id] = {}
-        xp[guild.id][member.id] += Math.floor(Math.random()*7+18)
-        timers[guild.id][member.id] = 0
+        xp[guild.id][user.id] += Math.floor(Math.random()*7+18)
+        timers[guild.id][user.id] = 0
         setTimeout(()=>{
-            delete timers[guild.id][member.id]
+            delete timers[guild.id][user.id]
         },30000)
     }
-    if(!timers[guild.id].containsKey(member.id)){
-        xp[guild.id][member.id] += Math.floor(Math.random()*7+18)
-        timers[guild.id][member.id] = 0
+    if(!timers[guild.id].containsKey(user.id)){
+        xp[guild.id][user.id] += Math.floor(Math.random()*7+18)
+        timers[guild.id][user.id] = 0
         setTimeout(()=>{
-            delete timers[guild.id][member.id]
+            delete timers[guild.id][user.id]
         },30000)
     }
     if(message.startsWith(prefix)){
@@ -131,10 +134,10 @@ client.on("message", async (msg) =>{
                     msg.reply("You put in too many args")
                     return;
                 }
-                const canvas = Canvas.createCanvas(500, 500);
+                const canvas = Canvas.createCanvas(576, 143);
                 const ctx = canvas.getContext('2d');
                 var level = 0;
-                while(level*level*100 < xp[guild.id][member.id]){
+                while(level*level*100 <= xp[guild.id][user.id]){
                     level+=1
                 }
                 const totalbar = 100*(level*level - (level-1)*(level-1));
@@ -143,29 +146,31 @@ client.on("message", async (msg) =>{
                 // This uses the canvas dimensions to stretch the image onto the entire canvas
                 ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
                 // Sets the font of the text
-                ctx.font = '30px sans-serif';
+                ctx.font = '20px sans-serif';
                 // Select the style that will be used to fill the text in
                 ctx.fillStyle = '#ffffff';
 	            // Draw a rectangle with the dimensions of the entire canvas
-                ctx.fillRect(canvas.width/6, canvas.height/1.68, maxBar*(xp[guild.id][member.id]-(level-1)*(level-1)*100)/totalbar, 51);
+                ctx.fillRect(canvas.width/4.2, canvas.height/1.63, maxBar*(xp[guild.id][user.id]-(level-1)*(level-1)*100)/totalbar, 36);
                 // Actually fill the text with a solid color
-                ctx.fillText(member.displayName, canvas.width / 3, canvas.height / 2);
+                ctx.fillText(member.displayName, canvas.width / 4, canvas.height / 2);
+                // Set new font
+                ctx.font = '30px sans-serif';
                 // Make more text
-                ctx.fillText((level-1).toString(), canvas.width / 1.3, canvas.height / 2.2)
+                ctx.fillText((level-1).toString(), canvas.width / 1.15, canvas.height / 4)
                 // Change the font
                 ctx.font = '20px sans-serif';
                 // Make even more text
-                ctx.fillText("Level", canvas.width / 1.5, canvas.height / 2.21)
+                ctx.fillText("Level", canvas.width / 1.3, canvas.height / 4)
                 // Make MORE text
-                ctx.fillText("Needed XP: "+(100*level*level-xp[guild.id][member.id]).toString(), canvas.width / 1.8, canvas.height / 1.9)
+                ctx.fillText("Needed XP: "+(100*level*level-xp[guild.id][user.id]).toString(), canvas.width / 1.5, canvas.height / 1.9)
                 // Wait for Canvas to load the image
                 const avatar = await Canvas.loadImage(msg.author.displayAvatarURL({ format: 'png' }));
                 // Draw a shape onto the main canvas
-                ctx.drawImage(avatar, canvas.width/6, canvas.height/2.5, 70, 70);
+                ctx.drawImage(avatar, canvas.width/20, canvas.height/3.5, 70, 70);
                 // Use helpful Attachment class structure to process the file for you
                 const attachment = new Discord.MessageAttachment(canvas.toBuffer(), 'XPBar.png');
                 msg.channel.send(attachment)
-                break
+                break;
             case "leaderboard":
                 const leaderboardEmbed = new Discord.MessageEmbed()
                 
@@ -173,7 +178,7 @@ client.on("message", async (msg) =>{
                 var members = guild.members.cache.array()
                 var membersXP = []
                 for(var i = 0; i < guild.memberCount; i++){
-                    var memberXP = xp[guild.id][members[i].id]
+                    var memberXP = xp[guild.id][members[i].user.id]
                     if(!members[i].user.bot){
                         membersXP.push([members[i].displayName, memberXP])
                     }
@@ -186,8 +191,12 @@ client.on("message", async (msg) =>{
                     }
                 })
                 for(var i = 0; i < membersXP.length; i++){
+                    var level = 0;
+                    while(level*level*100 <= membersXP[i][1]){
+                        level+=1
+                    }
                     text += "----------------------------------------------\n"
-                    text += membersXP[i][0] + " has " + membersXP[i][1].toString() + " xp \n"
+                    text += membersXP[i][0] + " has " + membersXP[i][1].toString() + " xp and is level " + (level - 1).toString() + "\n"
                     text += "----------------------------------------------\n"
                 }
                 leaderboardEmbed.setTitle("Leaderboard")
