@@ -7,7 +7,7 @@
 - [x] Create streaming system 
 - [x] Add Leaderboard Capabilities
 - [x] Make it look better
-- [ ] Giving the option of reseting XP
+- [x] Giving the option of reseting XP
 - [ ] XP events
 - [ ] Add asking system for legit streams
 - [ ] Finishing Touches
