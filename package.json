@@ -4,7 +4,11 @@
   "description": "A bot to autonomize Debates + Chat, a discord server network.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "engines": {
+    "node": "12.16.0"
   },
   "repository": {
     "type": "git",
@@ -19,7 +23,9 @@
   "dependencies": {
     "canvas": "^2.6.1",
     "discord.js": "^12.1.1",
-    "googleapis": "^39.2.0",
-    "xpress": "^2.4.6"
+    "xpress": "^2.4.6",
+    "express": "^4.17.1",
+    "express-glitch-keepalive": "^0.2.0",
+    "node-pre-gyp": "^0.14.0"
   }
 }

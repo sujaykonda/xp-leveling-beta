@@ -1,8 +1,10 @@
 const Discord = require("discord.js")
-const auth = require("./auth.json")
+const token = process.env.TOKEN
 const Canvas = require("canvas")
 const fs = require("fs")
-
+const http = require('http');
+const express = require('express');
+const app = express();
 var xp = {}
 var timers = {}
 var streamers = {}
@@ -36,6 +38,14 @@ String.prototype.splitSpace = function(){
 Object.prototype.containsKey = function(checkkey){
     return(Object.keys(this).some((key)=>{return(key==checkkey)}))
 }
+app.get("/", (request, response) => {
+  console.log(Date.now() + " Ping Received");
+  response.sendStatus(200);
+});
+app.listen(process.env.PORT);
+setInterval(() => {
+  http.get(`http://${process.env.PROJECT_DOMAIN}.glitch.me/`);
+}, 280000);
 client.on("ready", ()=>{
     const load = JSON.parse(fs.readFileSync('xp.json'))
     client.guilds.cache.array().forEach((guild, i) => {
@@ -51,7 +61,7 @@ client.on("ready", ()=>{
     })
     setInterval(()=>{
         Object.keys(streamers).forEach((userId, i) => {
-            nonBotUsers = 0
+            var nonBotUsers = 0
             streamers[userId][1].members.forEach((member, i) =>{
                 if(!member.user.bot && member.voice.speaking){
                     nonBotUsers += 1
@@ -285,4 +295,4 @@ client.on("message", async (msg) =>{
     }
     save()
 })
-client.login(auth.token)
+client.login(token)
