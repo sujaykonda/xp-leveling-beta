@@ -1,0 +1,34 @@
+body{
+  background: rgb(40 40 40);
+  color:white;
+  margin-right: 0px;
+  margin-left: 0px;  
+}
+
+img {
+  border-radius: 50%;
+}
+.xptable{
+  background: rgb(60 60 60);
+  border-collapse: collapse;
+  width: 75%
+}
+.xpitem{
+  vertical-align:middle; 
+  text-align:center;
+}
+.xprowheader{
+  font-size: 30px
+}
+.rolestable{
+  background: rgb(60 60 60);
+  border-collapse: collapse;
+  width: 75%
+}
+.rolesitem{
+  vertical-align:middle; 
+  text-align:center;
+}
+.rolesrowheader{
+  font-size: 25px
+}

@@ -2,7 +2,7 @@
 
 ## Status
 
-**_Currently Under Heavy Development_**
+**_Close to finishing_**
 
 ### TODO LIST
 
@@ -12,9 +12,9 @@
 - [x] Add Leaderboard Capabilities
 - [x] Make it look better
 - [x] Giving the option of reseting XP
-- [ ] XP events
-- [ ] Add asking system for legit streams
-- [ ] Finishing Touches
+- [X] XP events
+- ~~[ ] Add asking system for legit streams~~
+- [X] Finishing Touches
 
 ## Description
 

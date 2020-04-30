@@ -1,0 +1,42 @@
+doctype html
+html
+  head
+    link(rel = "stylesheet", href="style.css")
+    
+  body
+  font(face = "arial")
+    center
+      table
+        tr
+          td
+            img(src="https://cdn.glitch.com/0f81360e-5016-4699-a527-984e3a840393%2FXpBot4.jpg?v=1586459381715", height="100", width="100", align="left")
+          th 
+            h1 XP & Leveling Bot Leaderboard
+    table(align="center").xptable
+      tr.xprowheader
+        h1
+          th.xpitem Avatar
+          th.xpitem Tag
+          th.xpitem XP
+          th.xpitem Level
+      each tagXP in xp
+        tr.xprow
+          td.xpitem 
+             img(src = tagXP.user.displayAvatarURL(), height="50", width="50", align="middle").avatar
+          th.xpitem #{tagXP.user.tag}  
+          th.xpitem #{tagXP.xp[0]}
+          th.xpitem #{tagXP.xp[1]}
+    h1(align="center") Guild Info
+    h3(align="center") Mini Event Channel: #{miniEventChannel}
+    table(align="center").rolestable
+      tr.rolesrowheader
+        th.rolesitem Role
+        th.rolesitem Level Requirement
+        th.rolesitem Color
+      each role in roles
+        tr.rolesrow
+          th.rolesitem #{role.role}
+          th.rolesitem #{role.req}
+          td
+            div(style={background: role.color, padding: "10px"}).rolesitem
+
