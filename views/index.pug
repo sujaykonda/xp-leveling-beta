@@ -15,12 +15,14 @@ html
     table(align="center").xptable
       tr.xprowheader
         h1
+          th.xpitem Rank
           th.xpitem Avatar
           th.xpitem Tag
           th.xpitem XP
           th.xpitem Level
       each tagXP in xp
         tr.xprow
+          th.xpitem #{tagXP.rank}
           td.xpitem 
              img(src = tagXP.user.displayAvatarURL(), height="50", width="50", align="middle").avatar
           th.xpitem #{tagXP.user.tag}  

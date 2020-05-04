@@ -145,6 +145,14 @@ app.get("/", (request, response) => {
     tagXP.sort((a, b) => {
       return b.xp[0] - a.xp[0];
     });
+    var newTagXP = [];
+    for (var i = 0; i < tagXP.length; i++) {
+      newTagXP.push({
+        rank: i + 1,
+        user: tagXP[i].user,
+        xp: tagXP[i].xp
+      });
+    }
     var guildRoles = [];
     for (var i = 0; i < 4; i++) {
       if (roles[guildId][i][1] != -1) {
@@ -162,7 +170,7 @@ app.get("/", (request, response) => {
       channel = "None";
     }
     response.render("index", {
-      xp: tagXP,
+      xp: newTagXP,
       miniEventChannel: channel,
       roles: guildRoles
     });
@@ -336,7 +344,7 @@ client.on("message", async msg => {
       delete timers[guild.id][user.id];
     }, 30000);
   }
-  if (msg.content.toLowerCase === "hello" && PopUpEventOn) {
+  if (msg.content.toLowerCase() === "hello" && PopUpEventOn) {
     addXP(msg.guild.id, msg.author.id, miniEventXp);
     PopUpEventOn = false;
     msg.channel.send(msg.author.username + " Has WON!");
@@ -357,7 +365,7 @@ client.on("message", async msg => {
         helpEmbed.setTitle("Help");
         helpEmbed.addField(
           "General Commands",
-          "**roles** - displays all role requirments. \n **rank | r** - displayes your rank \n **levels | l** - its like the leaderboard but on a website \n **leaderboard** - displays everyone in a leaderboard format but we realized that glitch is unable to comprehend that much data. So it's gone. \n **info | i** - Gives you information about the bot and what it does. \n **color | c** [color] - changes the color of the bar \n **rand** [start num][end num] - returns a random number from start num to end num \n **rgb** [red] [green] [blue] - turns the color of your bar to whatever rgb value you put in"
+          "**roles** - displays all role requirments. \n **rank | r** - displayes your rank \n **levels | l** - its like the leaderboard but on a website \n **info | i** - Gives you information about the bot and what it does. \n **color | c** [color] - changes the color of the bar \n **rand** [start num][end num] - returns a random number from start num to end num \n **rgb** [red] [green] [blue] - turns the color of your bar to whatever rgb value you put in"
         );
         helpEmbed.addField(
           "Admin Commands",
@@ -375,6 +383,9 @@ client.on("message", async msg => {
           "This bot is has a built in leveling system that will have levels depending on the number of messages that he sends and if he go live streams. This is for the D+C Server Network"
         );
         break;
+      case "invite":
+        msg.channel.send("https://discordapp.com/api/oauth2/authorize?client_id=691738645417164920&scope=bot&permissions=8");
+        break
       //command that displays the rank card
       case "r":
       case "rank":
@@ -382,6 +393,18 @@ client.on("message", async msg => {
         const mentionedUsers = msg.mentions.users.array();
         if (mentionedUsers.length == 1) {
           userRank = mentionedUsers[0];
+        } else if (args.length == 1) {
+          var tarMember = guild.members.cache.array().find(mem => {
+            return (
+              mem.displayName.toLowerCase() === args[0].toLowerCase() ||
+              mem.user.username.toLowerCase() === args[0].toLowerCase()
+            );
+          });
+          if (tarMember == null) {
+            msg.channel.send("Invalid argument at arg 0");
+            return;
+          }
+          userRank = tarMember.user;
         }
         const canvas = Canvas.createCanvas(576, 143);
         const ctx = canvas.getContext("2d");
@@ -444,7 +467,7 @@ client.on("message", async msg => {
         // Make more text
         ctx.fillText(
           "#" + rank.toString(),
-          canvas.width / 1.75,
+          canvas.width / 1.8,
           canvas.height / 2.1
         );
         // Make more text
@@ -498,51 +521,51 @@ client.on("message", async msg => {
         msg.channel.send("http://xp-leveling-bot.glitch.me/?" + guild.id);
         break;
       //displays the leaderboard of the guild
-//       case "l":
-//       case "leaderboard":
-//         const leaderboardEmbed = new Discord.MessageEmbed();
+      //       case "l":
+      //       case "leaderboard":
+      //         const leaderboardEmbed = new Discord.MessageEmbed();
 
-//         var text = "";
-//         var members = guild.members.cache.array();
-//         var membersXP = [];
-//         if (guild.memberCount > 5) {
-//           var i = 0
-//           while(i < 5) {
-//             var memberXP = xp[guild.id][members[i].user.id];
-//             if (!members[i].user.bot) {
-//               membersXP.push([members[i].displayName, memberXP]);
-//               i++
-//             }
-//           }
-//         } else {
-//           for (var i = 0; i < guild.memberCount; i++) {
-//             var memberXP = xp[guild.id][members[i].user.id];
-//             if (!members[i].user.bot) {
-//               membersXP.push([members[i].displayName, memberXP]);
-//             }
-//           }
-//         }
-//         membersXP.sort((a, b) => {
-//           return b[1][0] - a[1][0];
-//         });
-//         for (var i = 0; i < membersXP.length; i++) {
-//           text += "\n";
-//           text +=
-//             "**" +
-//             membersXP[i][0] +
-//             "** has " +
-//             membersXP[i][1][0].toString() +
-//             " xp and is level " +
-//             membersXP[i][1][1].toString() +
-//             "\n";
-//         }
-//         leaderboardEmbed.setTitle("Leaderboard");
-//         leaderboardEmbed.setDescription(text);
-//         leaderboardEmbed.setFooter(
-//           "sujayk#8847 and IshanR#7052 made this bot and some credit to TheRandomestGuy#6299"
-//         );
-//         msg.channel.send(leaderboardEmbed);
-//         break;
+      //         var text = "";
+      //         var members = guild.members.cache.array();
+      //         var membersXP = [];
+      //         if (guild.memberCount > 5) {
+      //           var i = 0
+      //           while(i < 5) {
+      //             var memberXP = xp[guild.id][members[i].user.id];
+      //             if (!members[i].user.bot) {
+      //               membersXP.push([members[i].displayName, memberXP]);
+      //               i++
+      //             }
+      //           }
+      //         } else {
+      //           for (var i = 0; i < guild.memberCount; i++) {
+      //             var memberXP = xp[guild.id][members[i].user.id];
+      //             if (!members[i].user.bot) {
+      //               membersXP.push([members[i].displayName, memberXP]);
+      //             }
+      //           }
+      //         }
+      //         membersXP.sort((a, b) => {
+      //           return b[1][0] - a[1][0];
+      //         });
+      //         for (var i = 0; i < membersXP.length; i++) {
+      //           text += "\n";
+      //           text +=
+      //             "**" +
+      //             membersXP[i][0] +
+      //             "** has " +
+      //             membersXP[i][1][0].toString() +
+      //             " xp and is level " +
+      //             membersXP[i][1][1].toString() +
+      //             "\n";
+      //         }
+      //         leaderboardEmbed.setTitle("Leaderboard");
+      //         leaderboardEmbed.setDescription(text);
+      //         leaderboardEmbed.setFooter(
+      //           "sujayk#8847 and IshanR#7052 made this bot and some credit to TheRandomestGuy#6299"
+      //         );
+      //         msg.channel.send(leaderboardEmbed);
+      //         break;
       //administrator command that resets all of the xp in the guild
       case "clearall":
         if (member.hasPermission("ADMINISTRATOR")) {
@@ -607,7 +630,7 @@ client.on("message", async msg => {
               if (roleMentions.length >= 1) {
                 roles[guild.id][parseInt(args[0])] = [
                   parseInt(args[1]),
-                  roleMentions[0]
+                  roleMentions[0].id
                 ];
                 msg.channel.send("Success, It finished");
               } else {
